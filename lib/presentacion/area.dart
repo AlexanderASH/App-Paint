@@ -1,9 +1,5 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:plottertopicos/presentacion/Bluetooth.dart' as prefix0;
-import 'package:plottertopicos/presentacion/bluetooth.dart';
-
-import 'package:path_provider/path_provider.dart';
 import 'package:positioned_tap_detector/positioned_tap_detector.dart';
 import 'package:plottertopicos/modelos/punto.dart';
 import 'package:plottertopicos/modelos/poligono.dart';
@@ -58,9 +54,9 @@ class _AreaPageState extends State<AreaPage> {
   String _fileName;
   String _path;
 
-  String _extension = 'odt';
+  List<String> _extension = ['odt'];
 
-  FileType _pickingType = FileType.CUSTOM;
+  FileType _pickingType = FileType.custom;
 
   @override
   Widget build(BuildContext context) {
@@ -136,8 +132,8 @@ class _AreaPageState extends State<AreaPage> {
   }
 
   void abrirArchivo() async {
-    _path = await FilePicker.getFilePath(
-        type: _pickingType, fileExtension: _extension);
+    _path = (await FilePicker.platform.pickFiles(
+        type: _pickingType, allowedExtensions: _extension)).toString();
     final file = File(_path);
     String text = await file.readAsString();
     Map<String, dynamic> map = json.decode(text);
@@ -183,7 +179,7 @@ class _AreaPageState extends State<AreaPage> {
           },
         ),
         TextField( controller: nombreControler,),
-        RaisedButton(
+        ElevatedButton(
           child: Text('Guardar Archivo'),
           onPressed: (){
             guardarArchivo(nombreControler.text);
@@ -219,14 +215,14 @@ class _AreaPageState extends State<AreaPage> {
             ],
           ),
           actions: <Widget>[
-            FlatButton(
+            TextButton(
               onPressed: (){
                 this.nombreObjeto.text="";//Lo vaciamos cuadno vuelve hacia atras porque sin esto se mantiene
                 Navigator.pop(context);
               },
               child: Text('Cancelar'),
             ),
-            FlatButton(
+            TextButton(
               onPressed: (){
                 c.crearObjeto(nombreObjeto.text);
                 Navigator.pop(context);//Para volver atras

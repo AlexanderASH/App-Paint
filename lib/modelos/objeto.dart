@@ -5,7 +5,7 @@ class Objeto{
  String nombre;
  bool tipo;
   Objeto(){
-    poligonos= new List();
+    poligonos= [];
     tipo=false;//es el objeto 0 para almacenar los poligonos
   }
 

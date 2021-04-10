@@ -6,7 +6,7 @@ class Poligono {
   int color;//solo por demostracion
 
   Poligono() {
-    puntos = new List();
+    puntos = [];
     tipo=true;
     color= 0xff000000;
   }

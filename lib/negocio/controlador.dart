@@ -21,7 +21,7 @@ class Controlador{
     objeto = new Objeto();
     poligono = new Poligono();
     asignarPrimerPunto = true;
-    marcado=new List<Poligono>();
+    marcado=<Poligono>[];
     iniciarArea();
   }
   //Usado al abrir un archivo guardado
