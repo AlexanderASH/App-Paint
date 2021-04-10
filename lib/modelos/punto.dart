@@ -1,10 +1,10 @@
 class Punto {
-  double x;
-  double y;
+  double _x;
+  double _y;
 
-  Punto(this.x, this.y);
+  Punto(this._x, this._y);
 
-  double get getX => this.x;
-  double get getY => this.y;
+  double get getX => this._x;
+  double get getY => this._y;
 }
  

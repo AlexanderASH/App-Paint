@@ -36,7 +36,6 @@ class ControladorJsonSerializer extends Serializer<Controlador>
     with _$ControladorJsonSerializer {}
 
 class AreaPage extends StatefulWidget {
-  AreaPage({Key key}) : super(key: key);
 
   _AreaPageState createState() => _AreaPageState();
 }
@@ -263,7 +262,7 @@ class _AreaPageState extends State<AreaPage> {
           },
         ),
       ),
-      (c.marcado.length==1 && !c.objeto.getTipo)?//EDICION PARA UN SOLO POLIGONO
+      (c.marcado.length == 1 && !c.objeto.getTipo)?//EDICION PARA UN SOLO POLIGONO
       PopupMenuItem(
         //eliminar ultimo punto
         child: ListTile(
@@ -277,7 +276,7 @@ class _AreaPageState extends State<AreaPage> {
           },
         ),
       ):null,
-      (c.marcado.length==1 && !c.objeto.getTipo)?//EDICION PARA UN SOLO POLIGONO
+      (c.marcado.length == 1 && !c.objeto.getTipo)?//EDICION PARA UN SOLO POLIGONO
       PopupMenuItem(
         //eliminar ultimo punto
         child: ListTile(
@@ -286,13 +285,13 @@ class _AreaPageState extends State<AreaPage> {
           leading: Icon(Icons.delete_outline,color: Colors.blue,),
           onTap: (){
             setState(() {
-              this.selectPunto=!this.selectPunto;
+              this.selectPunto =! this.selectPunto;
               Navigator.pop(context);
             });
           },
         ),
       ):null,
-      (c.marcado.length>=1)?//ELIMINACION
+      (c.marcado.length >= 1)?//ELIMINACION
       PopupMenuItem(
         //eliminar seleccionas
         child: ListTile(
@@ -306,7 +305,7 @@ class _AreaPageState extends State<AreaPage> {
           },
         ),
       ):null,
-      (c.marcado.length>=1 && !c.objeto.getTipo)?//CREAR OBJETO
+      (c.marcado.length >= 1 && !c.objeto.getTipo)?//CREAR OBJETO
       PopupMenuItem(
         //crear nuevo objeto
         child: ListTile(
@@ -367,7 +366,7 @@ class _AreaPageState extends State<AreaPage> {
           },
         ),
       ),
-      (c.marcado.length>0)?//solo muestro cuando seleccionan
+      (c.marcado.length > 0)?//solo muestro cuando seleccionan
       PopupMenuItem(
         //Color
         child: ListTile(
@@ -392,27 +391,7 @@ class _AreaPageState extends State<AreaPage> {
                   );
           },
         ),
-      ):null,
-      /*PopupMenuItem(
-        //crear nuevo objeto
-        child: FloatingActionButton(
-          onPressed: () {
-            Navigator.of(context).push(
-                    MaterialPageRoute(builder: (context)=>prefix0.MainPage(controlador:c))
-                  );
-          },
-          child: Icon(Icons.bluetooth),
-        ),
-      ),
-       PopupMenuItem(
-        //crear nuevo objeto
-        child: FloatingActionButton(
-          onPressed: (){
-               c.dataBluetooth();
-          },
-          child: Icon(Icons.send),
-        ),
-      ),*/
+      ):null
     ];
   }
   

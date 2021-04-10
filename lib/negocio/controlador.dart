@@ -22,7 +22,7 @@ class Controlador {
     objeto = new Objeto();
     poligono = new Poligono();
     asignarPrimerPunto = true;
-    marcado=<Poligono>[];
+    marcado = <Poligono>[];
     iniciarArea();
   }
 
@@ -56,7 +56,7 @@ class Controlador {
     print('relativas ');
     print(x);
     print(y);
-    this.poligono.puntos.add(new Punto(x, y));
+    this.poligono.insertarPunto(new Punto(x, y));
   }
 
   double conversionRelativaY(double valor) {
@@ -92,30 +92,30 @@ class Controlador {
     x = conversionRelativaX(x);
     y = conversionRelativaY(y);
     print("$x , $y");
-    for(int i = 0; i < this.escenario.objetos.length; i++) {
-        for(int j = this.escenario.objetos[i].poligonos.length - 2; j >= 0; j--) {//-2 para evitar el nuevo poligono creado
-          bool prueba = PointLocal().pointInPolygon(Punto(x,y), this.escenario.objetos[i].poligonos[j]);
+    for(int i = 0; i < this.escenario.getLengthObjetos(); i++) {
+        for(int j = this.escenario.getObjeto(i).getLengthPoligonos() - 2; j >= 0; j--) {//-2 para evitar el nuevo poligono creado
+          bool prueba = PointLocal().pointInPolygon(Punto(x,y), this.escenario.getObjeto(i).getPoligono(j));
           print(prueba);
           if(prueba) {
             if(i == 0) {//0 es el this.escenario.objetos[i] principal
-              if(this.marcado != null && this.marcado.contains(this.escenario.objetos[i].poligonos[j])){
-                this.marcado.remove(this.escenario.objetos[i].poligonos[j]);//elimino de la lista
+              if(this.marcado != null && this.marcado.contains(this.escenario.getObjeto(i).getPoligono(j))){
+                this.marcado.remove(this.escenario.getObjeto(i).getPoligono(j));//elimino de la lista
               }else {
-                this.marcado.add(this.escenario.objetos[i].poligonos[j]);//añadiendo
+                this.marcado.add(this.escenario.getObjeto(i).getPoligono(j));//añadiendo
               }
               if(this.marcado.length == 1){//Si es un poligono para aplicar edicion
                 this.poligono = this.marcado[0];//selecciono el unico que queda
               }else {//Mas de uno vuelvo a la normalidad
-                this.poligono = this.escenario.objetos[i].getLastPoligono();
+                this.poligono = this.escenario.getObjeto(i).getLastPoligono();
               }
               return;
             }else{//Si el objeto es diferente al object 0
-              if(this.marcado != null && this.marcado.contains(this.escenario.objetos[i].poligonos[j])) {
-                this.objeto = this.escenario.objetos[i];
+              if(this.marcado != null && this.marcado.contains(this.escenario.getObjeto(i).getPoligono(j))) {
+                this.objeto = this.escenario.getObjeto(i);
                 deseleccionarObjeto();
-                this.objeto = this.escenario.objetos[0];//vuelvo a establecer en el objeto 0 para continuar los dibujos
+                this.objeto = this.escenario.getObjeto(0);//vuelvo a establecer en el objeto 0 para continuar los dibujos
               }else {
-                this.objeto = this.escenario.objetos[i];//Igualo al objeto seleccionado para modificar
+                this.objeto = this.escenario.getObjeto(i);//Igualo al objeto seleccionado para modificar
                 marcarTodoObject();//envia a la lista de marcados todos los poligonos del object
               }
                 this.poligono = this.objeto.getLastPoligono();//Establezco el poligono vacio creado por defecto
@@ -267,11 +267,11 @@ class Controlador {
   }
 
   eliminarPoligonoVacio() {
-    this.objeto.poligonos.removeLast();//elimino el poligono vacio del objeto para adicionar
+    this.objeto.eliminarPoligonoAux();//elimino el poligono vacio del objeto para adicionar
   }
 
   addPoligonoVacio() {
-    this.objeto.poligonos.add(new Poligono());//adiciono el poligono vacio al objeto para continuar el dibujo
+    this.objeto.insertarPoligono(new Poligono());//adiciono el poligono vacio al objeto para continuar el dibujo
   }
 }
 
