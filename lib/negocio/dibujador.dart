@@ -11,8 +11,8 @@ class Dibujo extends CustomPainter {
   Punto puntoInicial;
   Punto puntoFinal;
   bool asignarPrimerPunto;
-  List<Poligono>marcado;//Nuevo
-  bool bandera=false;//Nuevo
+  List<Poligono> marcado;//Nuevo
+  bool bandera = false;//Nuevo
   
   Dibujo(this.escenario,this.asignarPrimerPunto,this.marcado);
 
@@ -20,6 +20,7 @@ class Dibujo extends CustomPainter {
   bool shouldRepaint(Dibujo old) {
     return true;
   }
+  
   void paint(Canvas canvas, Size size) {
 
     final pointMode = ui.PointMode.points;
@@ -30,26 +31,30 @@ class Dibujo extends CustomPainter {
         final pincel = Paint()
               ..color = Color(poligono.getColor)
               ..strokeWidth = 4;
-        (this.marcado.contains(poligono))?bandera=true:bandera=false;
+        (this.marcado.contains(poligono)) ? bandera = true : bandera = false;
         //recorrido de puntos class Poligono
         poligono.puntos.forEach((punto) {
           if (!this.asignarPrimerPunto) {
-            this.puntoFinal=this.convertirAbsoluto(punto, size);
-            if(this.bandera){
+            this.puntoFinal = this.convertirAbsoluto(punto, size);
+            if(this.bandera) {
               this.dibujarSelect(canvas, pointMode, puntoFinal.getX,puntoFinal.getY);
             }
             canvas.drawLine(
                 Offset(this.puntoInicial.getX, this.puntoInicial.getY),
                 Offset(this.puntoFinal.getX, this.puntoFinal.getY),
-                pincel);
+                pincel
+            );
             this.puntoInicial = this.puntoFinal;
           } else {
             Punto p1 = convertirAbsoluto(punto, size);
-            canvas.drawPoints(pointMode, [Offset(p1.getX,
-                 p1.getY)], pincel);
+            canvas.drawPoints(
+              pointMode, 
+              [Offset(p1.getX,p1.getY)], 
+              pincel
+            );
             this.puntoInicial = this.convertirAbsoluto(punto, size);
-            if(this.bandera){
-              this.dibujarSelect(canvas, pointMode, puntoInicial.getX,puntoInicial.getY);
+            if(this.bandera) {
+              this.dibujarSelect(canvas, pointMode, puntoInicial.getX, puntoInicial.getY);
             }
             this.asignarPrimerPunto = false;
           }
@@ -67,15 +72,15 @@ class Dibujo extends CustomPainter {
     });
   }
 
-  Punto convertirAbsoluto(Punto punto,Size size){
-    double width=size.width/2;
-    double height=size.height/2;
-    double x=punto.getX+width;
-    double y=punto.getY-height;
-    return new Punto(x, (-1*y));
+  Punto convertirAbsoluto(Punto punto,Size size) {
+    double width = size.width / 2;
+    double height = size.height / 2;
+    double x = punto.getX + width;
+    double y = punto.getY - height;
+    return new Punto(x, (-1 * y));
   }
 
-  dibujarSelect(Canvas canvas,ui.PointMode pointMode,double x,double y){
+  dibujarSelect(Canvas canvas, ui.PointMode pointMode, double x, double y) {
     final pincel2 = Paint()
           ..color = Colors.green
           ..strokeWidth = 15;

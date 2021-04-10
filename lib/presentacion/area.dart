@@ -43,8 +43,8 @@ class AreaPage extends StatefulWidget {
 
 class _AreaPageState extends State<AreaPage> {
   Controlador c = new Controlador();
-  bool select=true;//Para mostrar mensaje de desactivar
-  bool selectPunto=true;
+  bool select = true;//Para mostrar mensaje de desactivar
+  bool selectPunto = true;
   Color currentColor = Colors.amber;//Color inicial
   ControladorJsonSerializer clse = new ControladorJsonSerializer();
   TapPosition _position = TapPosition(Offset.zero, Offset.zero);
@@ -91,12 +91,12 @@ class _AreaPageState extends State<AreaPage> {
   }
 
   Future _onTap(TapPosition position) async {
-    if(this.select){
+    if(this.select) {
         c.insertarPunto(position.global.dx, position.global.dy);
-    }else{//En modo seleccion
-        if(this.selectPunto){
+    }else {//En modo seleccion
+        if(this.selectPunto) {
           c.selectPoligono(position.global.dx, position.global.dy);
-        }else{//Modo seleccion y activado eliminar punto
+        }else {//Modo seleccion y activado eliminar punto
           setState(() {
             c.eliminarPuntoSelect(position.global.dx, position.global.dy);
           });
@@ -217,13 +217,13 @@ class _AreaPageState extends State<AreaPage> {
           actions: <Widget>[
             TextButton(
               onPressed: (){
-                this.nombreObjeto.text="";//Lo vaciamos cuadno vuelve hacia atras porque sin esto se mantiene
+                this.nombreObjeto.text = "";//Lo vaciamos cuadno vuelve hacia atras porque sin esto se mantiene
                 Navigator.pop(context);
               },
               child: Text('Cancelar'),
             ),
             TextButton(
-              onPressed: (){
+              onPressed: () {
                 c.crearObjeto(nombreObjeto.text);
                 Navigator.pop(context);//Para volver atras
               },//Aqui registramos el expediente

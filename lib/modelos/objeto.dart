@@ -1,51 +1,53 @@
 import 'package:plottertopicos/modelos/poligono.dart';
 
-class Objeto{
- List<Poligono> poligonos;
- String nombre;
- bool tipo;
-  Objeto(){
-    poligonos= [];
-    tipo=false;//es el objeto 0 para almacenar los poligonos
+class Objeto {
+
+  List<Poligono> poligonos;
+  String nombre;
+  bool tipo;
+  
+  Objeto() {
+    poligonos = [];
+    tipo = false;//es el objeto 0 para almacenar los poligonos
   }
 
-  void setNombre(String nombre){
-    this.nombre=nombre;
+  void setNombre(String nombre) {
+    this.nombre = nombre;
   }
 
-  String get getNombre =>this.nombre;
+  String get getNombre => this.nombre;
 
-  bool get getTipo =>this.tipo;
+  bool get getTipo => this.tipo;
 
-  void setTipo(bool tipo){//Para los nuevos objetos creados
-    this.tipo=tipo;
+  void setTipo(bool tipo) {//Para los nuevos objetos creados
+    this.tipo = tipo;
   }
 
-  void insertarPoligono(Poligono p) => poligonos.add(p);
+  void insertarPoligono(Poligono poligono) => poligonos.add(poligono);
 
-  Poligono getLastPoligono()=>poligonos[poligonos.length-1];
+  Poligono getLastPoligono() => poligonos[poligonos.length-1];
 
-  int getLengthPoligonos(){
+  int getLengthPoligonos() {
     return this.poligonos.length;
   }
 
-  Poligono getPoligono(int index){
+  Poligono getPoligono(int index) {
     return this.poligonos[index];
   }
 
-  void eliminarPoligono(Poligono poligono){
+  void eliminarPoligono(Poligono poligono) {
     this.poligonos.remove(poligono);
   }
 
-  bool existePoligono(Poligono poligono){
+  bool existePoligono(Poligono poligono) {
     return this.poligonos.contains(poligono);
   }
 
-  void eliminarPoligonoAux(){
+  void eliminarPoligonoAux() {
     this.poligonos.removeLast();
   }
 
-  void insertarPoligonoAux(){
+  void insertarPoligonoAux() {
     this.poligonos.add(new Poligono());
   }
 }
