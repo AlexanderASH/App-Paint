@@ -1,9 +1,5 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:plottertopicos/presentacion/Bluetooth.dart' as prefix0;
-import 'package:plottertopicos/presentacion/bluetooth.dart';
-
-import 'package:path_provider/path_provider.dart';
 import 'package:positioned_tap_detector/positioned_tap_detector.dart';
 import 'package:plottertopicos/modelos/punto.dart';
 import 'package:plottertopicos/modelos/poligono.dart';
@@ -40,15 +36,14 @@ class ControladorJsonSerializer extends Serializer<Controlador>
     with _$ControladorJsonSerializer {}
 
 class AreaPage extends StatefulWidget {
-  AreaPage({Key key}) : super(key: key);
 
   _AreaPageState createState() => _AreaPageState();
 }
 
 class _AreaPageState extends State<AreaPage> {
   Controlador c = new Controlador();
-  bool select=true;//Para mostrar mensaje de desactivar
-  bool selectPunto=true;
+  bool select = true;//Para mostrar mensaje de desactivar
+  bool selectPunto = true;
   Color currentColor = Colors.amber;//Color inicial
   ControladorJsonSerializer clse = new ControladorJsonSerializer();
   TapPosition _position = TapPosition(Offset.zero, Offset.zero);
@@ -58,9 +53,9 @@ class _AreaPageState extends State<AreaPage> {
   String _fileName;
   String _path;
 
-  String _extension = 'odt';
+  List<String> _extension = ['odt'];
 
-  FileType _pickingType = FileType.CUSTOM;
+  FileType _pickingType = FileType.custom;
 
   @override
   Widget build(BuildContext context) {
@@ -95,12 +90,12 @@ class _AreaPageState extends State<AreaPage> {
   }
 
   Future _onTap(TapPosition position) async {
-    if(this.select){
+    if(this.select) {
         c.insertarPunto(position.global.dx, position.global.dy);
-    }else{//En modo seleccion
-        if(this.selectPunto){
+    }else {//En modo seleccion
+        if(this.selectPunto) {
           c.selectPoligono(position.global.dx, position.global.dy);
-        }else{//Modo seleccion y activado eliminar punto
+        }else {//Modo seleccion y activado eliminar punto
           setState(() {
             c.eliminarPuntoSelect(position.global.dx, position.global.dy);
           });
@@ -136,8 +131,8 @@ class _AreaPageState extends State<AreaPage> {
   }
 
   void abrirArchivo() async {
-    _path = await FilePicker.getFilePath(
-        type: _pickingType, fileExtension: _extension);
+    _path = (await FilePicker.platform.pickFiles(
+        type: _pickingType, allowedExtensions: _extension)).toString();
     final file = File(_path);
     String text = await file.readAsString();
     Map<String, dynamic> map = json.decode(text);
@@ -183,7 +178,7 @@ class _AreaPageState extends State<AreaPage> {
           },
         ),
         TextField( controller: nombreControler,),
-        RaisedButton(
+        ElevatedButton(
           child: Text('Guardar Archivo'),
           onPressed: (){
             guardarArchivo(nombreControler.text);
@@ -219,15 +214,15 @@ class _AreaPageState extends State<AreaPage> {
             ],
           ),
           actions: <Widget>[
-            FlatButton(
+            TextButton(
               onPressed: (){
-                this.nombreObjeto.text="";//Lo vaciamos cuadno vuelve hacia atras porque sin esto se mantiene
+                this.nombreObjeto.text = "";//Lo vaciamos cuadno vuelve hacia atras porque sin esto se mantiene
                 Navigator.pop(context);
               },
               child: Text('Cancelar'),
             ),
-            FlatButton(
-              onPressed: (){
+            TextButton(
+              onPressed: () {
                 c.crearObjeto(nombreObjeto.text);
                 Navigator.pop(context);//Para volver atras
               },//Aqui registramos el expediente
@@ -267,7 +262,7 @@ class _AreaPageState extends State<AreaPage> {
           },
         ),
       ),
-      (c.marcado.length==1 && !c.objeto.getTipo)?//EDICION PARA UN SOLO POLIGONO
+      (c.marcado.length == 1 && !c.objeto.getTipo)?//EDICION PARA UN SOLO POLIGONO
       PopupMenuItem(
         //eliminar ultimo punto
         child: ListTile(
@@ -281,7 +276,7 @@ class _AreaPageState extends State<AreaPage> {
           },
         ),
       ):null,
-      (c.marcado.length==1 && !c.objeto.getTipo)?//EDICION PARA UN SOLO POLIGONO
+      (c.marcado.length == 1 && !c.objeto.getTipo)?//EDICION PARA UN SOLO POLIGONO
       PopupMenuItem(
         //eliminar ultimo punto
         child: ListTile(
@@ -290,13 +285,13 @@ class _AreaPageState extends State<AreaPage> {
           leading: Icon(Icons.delete_outline,color: Colors.blue,),
           onTap: (){
             setState(() {
-              this.selectPunto=!this.selectPunto;
+              this.selectPunto =! this.selectPunto;
               Navigator.pop(context);
             });
           },
         ),
       ):null,
-      (c.marcado.length>=1)?//ELIMINACION
+      (c.marcado.length >= 1)?//ELIMINACION
       PopupMenuItem(
         //eliminar seleccionas
         child: ListTile(
@@ -310,7 +305,7 @@ class _AreaPageState extends State<AreaPage> {
           },
         ),
       ):null,
-      (c.marcado.length>=1 && !c.objeto.getTipo)?//CREAR OBJETO
+      (c.marcado.length >= 1 && !c.objeto.getTipo)?//CREAR OBJETO
       PopupMenuItem(
         //crear nuevo objeto
         child: ListTile(
@@ -371,7 +366,7 @@ class _AreaPageState extends State<AreaPage> {
           },
         ),
       ),
-      (c.marcado.length>0)?//solo muestro cuando seleccionan
+      (c.marcado.length > 0)?//solo muestro cuando seleccionan
       PopupMenuItem(
         //Color
         child: ListTile(
@@ -396,27 +391,7 @@ class _AreaPageState extends State<AreaPage> {
                   );
           },
         ),
-      ):null,
-      /*PopupMenuItem(
-        //crear nuevo objeto
-        child: FloatingActionButton(
-          onPressed: () {
-            Navigator.of(context).push(
-                    MaterialPageRoute(builder: (context)=>prefix0.MainPage(controlador:c))
-                  );
-          },
-          child: Icon(Icons.bluetooth),
-        ),
-      ),
-       PopupMenuItem(
-        //crear nuevo objeto
-        child: FloatingActionButton(
-          onPressed: (){
-               c.dataBluetooth();
-          },
-          child: Icon(Icons.send),
-        ),
-      ),*/
+      ):null
     ];
   }
   

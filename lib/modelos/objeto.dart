@@ -1,51 +1,53 @@
 import 'package:plottertopicos/modelos/poligono.dart';
 
-class Objeto{
- List<Poligono> poligonos;
- String nombre;
- bool tipo;
-  Objeto(){
-    poligonos= new List();
-    tipo=false;//es el objeto 0 para almacenar los poligonos
+class Objeto {
+
+  List<Poligono> _poligonos;
+  String _nombre;
+  bool _tipo;
+  
+  Objeto() {
+    _poligonos = [];
+    _tipo = false;//es el objeto 0 para almacenar los poligonos
   }
 
-  void setNombre(String nombre){
-    this.nombre=nombre;
+  void setNombre(String nombre) {
+    this._nombre = nombre;
   }
 
-  String get getNombre =>this.nombre;
+  String get getNombre => this._nombre;
 
-  bool get getTipo =>this.tipo;
+  bool get getTipo => this._tipo;
 
-  void setTipo(bool tipo){//Para los nuevos objetos creados
-    this.tipo=tipo;
+  void setTipo(bool tipo) {//Para los nuevos objetos creados
+    this._tipo = tipo;
   }
 
-  void insertarPoligono(Poligono p) => poligonos.add(p);
+  void insertarPoligono(Poligono poligono) => this._poligonos.add(poligono);
 
-  Poligono getLastPoligono()=>poligonos[poligonos.length-1];
+  Poligono getLastPoligono() => this._poligonos[this._poligonos.length - 1];
 
-  int getLengthPoligonos(){
-    return this.poligonos.length;
+  int getLengthPoligonos() {
+    return this._poligonos.length;
   }
 
-  Poligono getPoligono(int index){
-    return this.poligonos[index];
+  Poligono getPoligono(int index) {
+    return this._poligonos[index];
   }
 
-  void eliminarPoligono(Poligono poligono){
-    this.poligonos.remove(poligono);
+  void eliminarPoligono(Poligono poligono) {
+    this._poligonos.remove(poligono);
   }
 
-  bool existePoligono(Poligono poligono){
-    return this.poligonos.contains(poligono);
+  bool existePoligono(Poligono poligono) {
+    return this._poligonos.contains(poligono);
   }
 
-  void eliminarPoligonoAux(){
-    this.poligonos.removeLast();
+  void eliminarPoligonoAux() {
+    this._poligonos.removeLast();
   }
 
-  void insertarPoligonoAux(){
-    this.poligonos.add(new Poligono());
+  void insertarPoligonoAux() {
+    this._poligonos.add(new Poligono());
   }
 }

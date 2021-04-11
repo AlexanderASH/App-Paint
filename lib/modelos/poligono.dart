@@ -1,45 +1,46 @@
 import 'punto.dart';
 
 class Poligono {
-  List<Punto> puntos;
-  bool tipo;
-  int color;//solo por demostracion
+
+  List<Punto> _puntos;
+  bool _tipo;
+  int _color;//solo por demostracion
 
   Poligono() {
-    puntos = new List();
-    tipo=true;
-    color= 0xff000000;
+    _puntos = [];
+    _tipo=true;
+    _color= 0xff000000;
   }
 
-  void setTipo(bool value) => tipo = value;
+  void setTipo(bool value) => this._tipo = value;
 
-  void setColor(int color){
-    this.color=color;
+  void setColor(int color) {
+    this._color = color;
   }
 
-  int get getColor =>color;
+  int get getColor => this._color;
 
-  bool get getTipo =>tipo;
+  bool get getTipo => this._tipo;
 
-  void insertarPunto(Punto p) => puntos.add(p);
+  void insertarPunto(Punto punto) => this._puntos.add(punto);
 
   //Funcion para obtener Punto en el caso de poligono cerrado
-  Punto getPrimerPunto()=>puntos[0];
+  Punto getPrimerPunto() => this._puntos[0];
 
-  void eliminarLastPunto(){
-    this.puntos.removeLast();
+  void eliminarLastPunto() {
+    this._puntos.removeLast();
   }
 
-  int getLengthPuntos(){
-    return this.puntos.length;
+  int getLengthPuntos() {
+    return this._puntos.length;
   }
 
-  Punto getPunto(int index){
-    return this.puntos[index];
+  Punto getPunto(int index) {
+    return this._puntos[index];
   }
 
-  void eliminarPunto(int index){
-    this.puntos.removeAt(index);
+  void eliminarPunto(int index) {
+    this._puntos.removeAt(index);
   }
 
 }

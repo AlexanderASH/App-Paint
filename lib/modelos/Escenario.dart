@@ -1,31 +1,33 @@
 import 'objeto.dart';
 
 class Escenario {
-  List<Objeto> objetos;
+
+  List<Objeto> _objetos;
+  
   Escenario() {
-    objetos = new List();
+    this._objetos = [];
   }
 
-  void insertarobjeto(Objeto o) => objetos.add(o);
+  void insertarObjeto(Objeto objeto) => this._objetos.add(objeto);
 
-  int getLengthObjetos(){
-    return this.objetos.length;
+  int getLengthObjetos() {
+    return this._objetos.length;
   }
 
-  Objeto getObjeto(int index){
-    return this.objetos[index];
+  Objeto getObjeto(int index) {
+    return this._objetos[index];
   }
 
-  void eliminarObjeto(int index){
-    this.objetos.removeAt(index);
+  void eliminarObjeto(int index) {
+    this._objetos.removeAt(index);
   }
 
-  void eliminarObjetoValue(Objeto objeto){
-    this.objetos.remove(objeto);
+  void eliminarObjetoValue(Objeto objeto) {
+    this._objetos.remove(objeto);
   }
   
-  //Donde se dibujan los poligonos que no pertenecen a ningun objeto
-  Objeto getObjetoBase(){
-    return this.objetos[0];
+  ///Donde se dibujan los poligonos que no pertenecen a ningun objeto
+  Objeto getObjetoBase() {
+    return this._objetos[0];
   }
 }
