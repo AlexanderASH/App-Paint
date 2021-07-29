@@ -42,14 +42,14 @@ class AreaPage extends StatefulWidget {
 
 class _AreaPageState extends State<AreaPage> {
   Controlador c = new Controlador();
-  bool select = true;//Para mostrar mensaje de desactivar
+  bool select = true;
   bool selectPunto = true;
-  Color currentColor = Colors.amber;//Color inicial
+  Color currentColor = Colors.amber;
   ControladorJsonSerializer clse = new ControladorJsonSerializer();
   TapPosition _position = TapPosition(Offset.zero, Offset.zero);
   TextEditingController nombreControler = new TextEditingController();
   TextEditingController nombreObjeto = new TextEditingController();
-  ///variables de filepicker
+  
   String _fileName;
   String _path;
 
@@ -60,27 +60,23 @@ class _AreaPageState extends State<AreaPage> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    //print(size.width);
-    //print(size.height);
     c.width = size.width;
     c.height = size.height;
     return Scaffold(
       body: SingleChildScrollView(
         child:Column(
-        //  mainAxisAlignment: MainAxisAlignment.center,
-        //crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          PositionedTapDetector(
-            onTap: _onTap, //Pulsos en la pantalla
-            onDoubleTap: _onDoubleTap,
-            onLongPress: _onLongPress,
-            child: CustomPaint(
-              size: Size(size.width, size.height),
-              painter: Dibujo(c.escenario, c.asignarPrimerPunto,c.marcado), //Dibujar el esenario
+          children: [
+            PositionedTapDetector(
+              onTap: _onTap,
+              onDoubleTap: _onDoubleTap,
+              onLongPress: _onLongPress,
+              child: CustomPaint(
+                size: Size(size.width, size.height),
+                painter: Dibujo(c.escenario, c.asignarPrimerPunto,c.marcado),
+              ),
             ),
-          ),
-        ],
-      ),
+          ],
+        ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {},
@@ -90,20 +86,19 @@ class _AreaPageState extends State<AreaPage> {
   }
 
   Future _onTap(TapPosition position) async {
-    if(this.select) {
+    if (this.select) {
         c.insertarPunto(position.global.dx, position.global.dy);
-    }else {//En modo seleccion
-        if(this.selectPunto) {
-          c.selectPoligono(position.global.dx, position.global.dy);
-        }else {//Modo seleccion y activado eliminar punto
-          setState(() {
-            c.eliminarPuntoSelect(position.global.dx, position.global.dy);
-          });
-        }
+    } else {
+      if (this.selectPunto) {
+        c.selectPoligono(position.global.dx, position.global.dy);
+      } else {
+        setState(() {
+          c.eliminarPuntoSelect(position.global.dx, position.global.dy);
+        });
+      }
     }
     _updateState('gesture', position);
   }
-  // void _onTap(TapPosition position) => _updateState('single tap', position);
 
   void _onDoubleTap(TapPosition position) {
     c.insertarPunto(position.global.dx, position.global.dy);
@@ -127,12 +122,13 @@ class _AreaPageState extends State<AreaPage> {
     final Map map = clse.toMap(c);
     final file = File('/storage/emulated/0/Download/$nombre.odt');
     await file.writeAsString(json.encode(map));
-    print(json.encode(map));
   }
 
   void abrirArchivo() async {
     _path = (await FilePicker.platform.pickFiles(
-        type: _pickingType, allowedExtensions: _extension)).toString();
+      type: _pickingType, 
+      allowedExtensions: _extension)
+    ).toString();
     final file = File(_path);
     String text = await file.readAsString();
     Map<String, dynamic> map = json.decode(text);
@@ -150,22 +146,23 @@ class _AreaPageState extends State<AreaPage> {
 
   void _modalGuardar() {
     showModalBottomSheet(
-        context: context,
-        builder: (context) {
-          return Container(
-            color: Colors.green,
-            height: 400,
-            child: Container(
-              child: _cuerpoModal(),
-              decoration: BoxDecoration(
-                  color: Theme.of(context).canvasColor,
-                  borderRadius: BorderRadius.only(
-                    topLeft: const Radius.circular(30),
-                    topRight: const Radius.circular(30),
-                  )),
+      context: context,
+      builder: (context) {
+        return Container(
+          color: Colors.green,
+          height: 400,
+          child: Container(
+            child: _cuerpoModal(),
+            decoration: BoxDecoration(
+              color: Theme.of(context).canvasColor,
+              borderRadius: BorderRadius.only(
+                topLeft: const Radius.circular(30),
+                topRight: const Radius.circular(30),
+              )
             ),
-          );
-        }
+          ),
+        );
+      }
     );
   }
   Column _cuerpoModal() {
@@ -189,12 +186,11 @@ class _AreaPageState extends State<AreaPage> {
     );
   }
 
-  //Para poner nombre al nuevo registro del expediente
   void _mostrarAlerta(BuildContext context){
     showDialog(
       context: context,
       barrierDismissible: true,
-      builder: (context){//Contruyendo la alerta
+      builder: (context) {
         return AlertDialog(
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
           title: Text("Nuevo Objeto"),
@@ -206,9 +202,9 @@ class _AreaPageState extends State<AreaPage> {
                 child: TextField(
                   controller: nombreObjeto,
                   decoration:InputDecoration(
-                            labelText: 'Nombre del Objeto',
-                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(20.0)),
-                      ),
+                    labelText: 'Nombre del Objeto',
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(20.0)),
+                  ),
                 ),
               ),
             ],
@@ -216,7 +212,7 @@ class _AreaPageState extends State<AreaPage> {
           actions: <Widget>[
             TextButton(
               onPressed: (){
-                this.nombreObjeto.text = "";//Lo vaciamos cuadno vuelve hacia atras porque sin esto se mantiene
+                this.nombreObjeto.text = "";
                 Navigator.pop(context);
               },
               child: Text('Cancelar'),
@@ -224,8 +220,8 @@ class _AreaPageState extends State<AreaPage> {
             TextButton(
               onPressed: () {
                 c.crearObjeto(nombreObjeto.text);
-                Navigator.pop(context);//Para volver atras
-              },//Aqui registramos el expediente
+                Navigator.pop(context);
+              },
               child: Text('Guardar'),
             ),
           ],
@@ -238,13 +234,14 @@ class _AreaPageState extends State<AreaPage> {
     return <PopupMenuEntry>[
       PopupMenuItem(
         child: ListTile(
-          title: (this.select)?Text("Activar Seleccion",style: TextStyle(fontSize: 15))
-                              :Text("Desactivar Seleccion",style: TextStyle(fontSize: 15)),
+          title: (this.select)
+          ? Text("Activar Seleccion",style: TextStyle(fontSize: 15))
+          : Text("Desactivar Seleccion",style: TextStyle(fontSize: 15)),
           leading: Icon(Icons.select_all,color:Colors.blue,),
           onTap: (){
             setState(() {
               this.select=!this.select;
-              this.selectPunto=true;//Desactivo el eliminarPunto porque depende del select
+              this.selectPunto = true;
               Navigator.pop(context);
             });
           },
@@ -254,17 +251,16 @@ class _AreaPageState extends State<AreaPage> {
         child: ListTile(
           title: Text("Limpiar Area",style: TextStyle(fontSize: 15),),
           leading: Icon(Icons.delete_forever,color: Colors.blue,),
-          onTap: (){
-              setState(() {
+          onTap: () {
+            setState(() {
               c.limpiarArea();
               Navigator.pop(context);
             });
           },
         ),
       ),
-      (c.marcado.length == 1 && !c.objeto.getTipo)?//EDICION PARA UN SOLO POLIGONO
-      PopupMenuItem(
-        //eliminar ultimo punto
+      (c.marcado.length == 1 && !c.objeto.getTipo)
+      ? PopupMenuItem(
         child: ListTile(
           title: Text("Eliminar ultimo punto",style: TextStyle(fontSize: 15),),
           leading: Icon(Icons.delete_outline,color: Colors.blue,),
@@ -275,13 +271,14 @@ class _AreaPageState extends State<AreaPage> {
             });
           },
         ),
-      ):null,
-      (c.marcado.length == 1 && !c.objeto.getTipo)?//EDICION PARA UN SOLO POLIGONO
-      PopupMenuItem(
-        //eliminar ultimo punto
+      )
+      : null,
+      (c.marcado.length == 1 && !c.objeto.getTipo)
+      ? PopupMenuItem(
         child: ListTile(
-          title: (this.selectPunto)?Text("Activar eliminacion de punto",style: TextStyle(fontSize: 15))
-                              :Text("Desactivar eliminacion de punto",style: TextStyle(fontSize: 15)),
+          title: (this.selectPunto)
+          ? Text("Activar eliminacion de punto",style: TextStyle(fontSize: 15))
+          : Text("Desactivar eliminacion de punto",style: TextStyle(fontSize: 15)),
           leading: Icon(Icons.delete_outline,color: Colors.blue,),
           onTap: (){
             setState(() {
@@ -290,10 +287,10 @@ class _AreaPageState extends State<AreaPage> {
             });
           },
         ),
-      ):null,
-      (c.marcado.length >= 1)?//ELIMINACION
-      PopupMenuItem(
-        //eliminar seleccionas
+      )
+      : null,
+      (c.marcado.length >= 1)
+      ? PopupMenuItem(
         child: ListTile(
           title: Text("Eliminar seleccionados",style: TextStyle(fontSize: 15),),
           leading: Icon(Icons.delete_sweep,color: Colors.blue,),
@@ -304,10 +301,10 @@ class _AreaPageState extends State<AreaPage> {
             });
           },
         ),
-      ):null,
-      (c.marcado.length >= 1 && !c.objeto.getTipo)?//CREAR OBJETO
-      PopupMenuItem(
-        //crear nuevo objeto
+      )
+      : null,
+      (c.marcado.length >= 1 && !c.objeto.getTipo)
+      ? PopupMenuItem(
         child: ListTile(
           title: Text("Crear objeto",style: TextStyle(fontSize: 15),),
           leading: Icon(Icons.add_circle,color: Colors.blue,),
@@ -315,10 +312,10 @@ class _AreaPageState extends State<AreaPage> {
             _mostrarAlerta(context);
           },
         ),
-      ):null,
-      (c.objeto.getTipo)?//solo me muestra cuando un objeto esta seleccionado(!=0)
-      PopupMenuItem(
-        //Disolver Objeto cuando este esta seleccionado(!=0)
+      )
+      : null,
+      (c.objeto.getTipo)
+      ? PopupMenuItem(
         child: ListTile(
           title: Text("Disolver objeto",style: TextStyle(fontSize: 15),),
           leading: Icon(Icons.add_circle,color: Colors.blue,),
@@ -327,10 +324,10 @@ class _AreaPageState extends State<AreaPage> {
             Navigator.pop(context);
           },
         ),
-      ):null,
-      (c.objeto.getTipo)?//solo me muestra cuando un objeto esta seleccionado(!=0)
-      PopupMenuItem(
-        //Une un nuevo poligono al objeto solucionado
+      )
+      : null,
+      (c.objeto.getTipo)
+      ? PopupMenuItem(
         child: ListTile(
           title: Text("Fusionar objeto",style: TextStyle(fontSize: 15),),
           leading: Icon(Icons.add_box,color: Colors.blue,),
@@ -339,14 +336,14 @@ class _AreaPageState extends State<AreaPage> {
             Navigator.pop(context);
           },
         ),
-      ):null,
+      )
+      : null,
       PopupMenuItem(
-        //ABRIR
         child: ListTile(
           title: Text("Abrir",style: TextStyle(fontSize: 15),),
           leading: Icon(Icons.open_in_browser,color: Colors.blue,),
           onTap: (){
-              setState(() {
+            setState(() {
               abrirArchivo();
               Navigator.pop(context);
             });
@@ -354,41 +351,39 @@ class _AreaPageState extends State<AreaPage> {
         ),
       ),
       PopupMenuItem(
-        //GUARDAR
         child: ListTile(
           title: Text("Guardar",style: TextStyle(fontSize: 15),),
           leading: Icon(Icons.save,color: Colors.blue,),
           onTap: (){
-              setState(() {
+            setState(() {
               Navigator.pop(context);
               _modalGuardar();
             });
           },
         ),
       ),
-      (c.marcado.length > 0)?//solo muestro cuando seleccionan
-      PopupMenuItem(
-        //Color
+      (c.marcado.length > 0)
+      ? PopupMenuItem(
         child: ListTile(
           title: Text("Color",style: TextStyle(fontSize: 15),),
           leading: Icon(Icons.color_lens,color: Colors.blue,),
           onTap: (){
-                  showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return AlertDialog(
-                        titlePadding: const EdgeInsets.all(0.0),
-                        contentPadding: const EdgeInsets.all(0.0),
-                        content: SingleChildScrollView(
-                          child: MaterialPicker(
-                            pickerColor: currentColor,
-                            onColorChanged: changeColor,
-                            enableLabel: true,
-                          ),
-                        ),
-                      );
-                    },
-                  );
+            showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  titlePadding: const EdgeInsets.all(0.0),
+                  contentPadding: const EdgeInsets.all(0.0),
+                  content: SingleChildScrollView(
+                    child: MaterialPicker(
+                      pickerColor: currentColor,
+                      onColorChanged: changeColor,
+                      enableLabel: true,
+                    ),
+                  ),
+                );
+              },
+            );
           },
         ),
       ):null
