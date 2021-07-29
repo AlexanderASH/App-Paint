@@ -4,12 +4,12 @@ class Poligono {
 
   List<Punto> _puntos;
   bool _tipo;
-  int _color;//solo por demostracion
+  int _color;
 
   Poligono() {
     _puntos = [];
-    _tipo=true;
-    _color= 0xff000000;
+    _tipo = true;
+    _color = 0xff000000;
   }
 
   void setTipo(bool value) => this._tipo = value;
@@ -24,7 +24,6 @@ class Poligono {
 
   void insertarPunto(Punto punto) => this._puntos.add(punto);
 
-  //Funcion para obtener Punto en el caso de poligono cerrado
   Punto getPrimerPunto() => this._puntos[0];
 
   void eliminarLastPunto() {

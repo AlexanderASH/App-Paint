@@ -8,7 +8,9 @@ class Escenario {
     this._objetos = [];
   }
 
-  void insertarObjeto(Objeto objeto) => this._objetos.add(objeto);
+  void insertarObjeto(Objeto objeto) {
+    this._objetos.add(objeto);
+  }
 
   int getLengthObjetos() {
     return this._objetos.length;
@@ -26,7 +28,6 @@ class Escenario {
     this._objetos.remove(objeto);
   }
   
-  ///Donde se dibujan los poligonos que no pertenecen a ningun objeto
   Objeto getObjetoBase() {
     return this._objetos[0];
   }

@@ -8,7 +8,7 @@ class Objeto {
   
   Objeto() {
     _poligonos = [];
-    _tipo = false;//es el objeto 0 para almacenar los poligonos
+    _tipo = false;
   }
 
   void setNombre(String nombre) {
@@ -19,7 +19,7 @@ class Objeto {
 
   bool get getTipo => this._tipo;
 
-  void setTipo(bool tipo) {//Para los nuevos objetos creados
+  void setTipo(bool tipo) {
     this._tipo = tipo;
   }
 
