@@ -16,7 +16,7 @@ class MyAppState extends State<MyApp> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        primaryColor: Colors.pink
+        accentColor: Colors.pink,
       ),
       home: AreaPage(),
     );

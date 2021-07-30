@@ -40,6 +40,7 @@ class AreaPage extends StatefulWidget {
   _AreaPageState createState() => _AreaPageState();
 }
 
+typedef void OnTap();
 class _AreaPageState extends State<AreaPage> {
   Controlador c = new Controlador();
   bool select = true;
@@ -80,7 +81,14 @@ class _AreaPageState extends State<AreaPage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {},
-        child: PopupMenuButton(itemBuilder: (context) => listOption(),color: Colors.yellowAccent,),
+        child: PopupMenuButton(
+          color: Colors.grey[700],
+          tooltip: 'Opciones',
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20.0)
+          ),
+          itemBuilder: (context) => listOption(),
+        ),
       ),
     );
   }
@@ -232,161 +240,129 @@ class _AreaPageState extends State<AreaPage> {
 
   List<PopupMenuEntry<dynamic>> listOption() {
     return <PopupMenuEntry>[
-      PopupMenuItem(
-        child: ListTile(
-          title: (this.select)
-          ? Text("Activar Seleccion",style: TextStyle(fontSize: 15))
-          : Text("Desactivar Seleccion",style: TextStyle(fontSize: 15)),
-          leading: Icon(Icons.select_all,color:Colors.blue,),
-          onTap: (){
-            setState(() {
-              this.select=!this.select;
-              this.selectPunto = true;
-              Navigator.pop(context);
-            });
-          },
-        ),
-      ),
-      PopupMenuItem(
-        child: ListTile(
-          title: Text("Limpiar Area",style: TextStyle(fontSize: 15),),
-          leading: Icon(Icons.delete_forever,color: Colors.blue,),
-          onTap: () {
-            setState(() {
-              c.limpiarArea();
-              Navigator.pop(context);
-            });
-          },
-        ),
-      ),
-      (c.marcado.length == 1 && !c.objeto.getTipo)
-      ? PopupMenuItem(
-        child: ListTile(
-          title: Text("Eliminar ultimo punto",style: TextStyle(fontSize: 15),),
-          leading: Icon(Icons.delete_outline,color: Colors.blue,),
-          onTap: (){
-              setState(() {
-              c.eliminarLastPunto();
-              Navigator.pop(context);
-            });
-          },
-        ),
-      )
-      : null,
-      (c.marcado.length == 1 && !c.objeto.getTipo)
-      ? PopupMenuItem(
-        child: ListTile(
-          title: (this.selectPunto)
-          ? Text("Activar eliminacion de punto",style: TextStyle(fontSize: 15))
-          : Text("Desactivar eliminacion de punto",style: TextStyle(fontSize: 15)),
-          leading: Icon(Icons.delete_outline,color: Colors.blue,),
-          onTap: (){
-            setState(() {
-              this.selectPunto =! this.selectPunto;
-              Navigator.pop(context);
-            });
-          },
-        ),
-      )
-      : null,
-      (c.marcado.length >= 1)
-      ? PopupMenuItem(
-        child: ListTile(
-          title: Text("Eliminar seleccionados",style: TextStyle(fontSize: 15),),
-          leading: Icon(Icons.delete_sweep,color: Colors.blue,),
-          onTap: (){
-            setState(() {
-              c.eliminarSeleccionados();
-              Navigator.pop(context);
-            });
-          },
-        ),
-      )
-      : null,
-      (c.marcado.length >= 1 && !c.objeto.getTipo)
-      ? PopupMenuItem(
-        child: ListTile(
-          title: Text("Crear objeto",style: TextStyle(fontSize: 15),),
-          leading: Icon(Icons.add_circle,color: Colors.blue,),
-          onTap: (){
-            _mostrarAlerta(context);
-          },
-        ),
-      )
-      : null,
-      (c.objeto.getTipo)
-      ? PopupMenuItem(
-        child: ListTile(
-          title: Text("Disolver objeto",style: TextStyle(fontSize: 15),),
-          leading: Icon(Icons.add_circle,color: Colors.blue,),
-          onTap: (){
-            c.disolverObjeto();
+      _createPopupMenuItem(
+        title: this.select ? 'Activar Seleccion' : 'Desactivar Seleccion',
+        iconData: Icons.select_all,
+        onTap: () {
+          setState(() {
+            this.select = !this.select;
+            this.selectPunto = true;
             Navigator.pop(context);
-          },
-        ),
-      )
-      : null,
-      (c.objeto.getTipo)
-      ? PopupMenuItem(
-        child: ListTile(
-          title: Text("Fusionar objeto",style: TextStyle(fontSize: 15),),
-          leading: Icon(Icons.add_box,color: Colors.blue,),
-          onTap: (){
-            c.fusionarObjeto();
+          });
+        }
+      ),
+      _createPopupMenuItem(
+        title: 'Limpiar area',
+        iconData: Icons.delete_forever,
+        onTap: () {
+          setState(() {
+            c.limpiarArea();
             Navigator.pop(context);
-          },
-        ),
-      )
-      : null,
-      PopupMenuItem(
-        child: ListTile(
-          title: Text("Abrir",style: TextStyle(fontSize: 15),),
-          leading: Icon(Icons.open_in_browser,color: Colors.blue,),
-          onTap: (){
-            setState(() {
-              abrirArchivo();
-              Navigator.pop(context);
-            });
-          },
-        ),
+          });
+        }
       ),
-      PopupMenuItem(
-        child: ListTile(
-          title: Text("Guardar",style: TextStyle(fontSize: 15),),
-          leading: Icon(Icons.save,color: Colors.blue,),
-          onTap: (){
-            setState(() {
-              Navigator.pop(context);
-              _modalGuardar();
-            });
-          },
-        ),
+      if (c.marcado.length == 1 && !c.objeto.getTipo)
+      _createPopupMenuItem(
+        title: 'Eliminar ultimo punto',
+        iconData: Icons.delete_outline,
+        onTap: () {
+          setState(() {
+            c.eliminarLastPunto();
+            Navigator.pop(context);
+          });
+        }
       ),
-      (c.marcado.length > 0)
-      ? PopupMenuItem(
-        child: ListTile(
-          title: Text("Color",style: TextStyle(fontSize: 15),),
-          leading: Icon(Icons.color_lens,color: Colors.blue,),
-          onTap: (){
-            showDialog(
-              context: context,
-              builder: (BuildContext context) {
-                return AlertDialog(
-                  titlePadding: const EdgeInsets.all(0.0),
-                  contentPadding: const EdgeInsets.all(0.0),
-                  content: SingleChildScrollView(
-                    child: MaterialPicker(
-                      pickerColor: currentColor,
-                      onColorChanged: changeColor,
-                      enableLabel: true,
-                    ),
+      if (c.marcado.length == 1 && !c.objeto.getTipo)
+      _createPopupMenuItem(
+        title: (this.selectPunto) ? 'Activar eliminacion de punto' : 'Desactivar eliminacion de punto',
+        iconData: Icons.delete_outline,
+        onTap: () {
+          setState(() {
+            this.selectPunto =! this.selectPunto;
+            Navigator.pop(context);
+          });
+        }
+      ),
+      if (c.marcado.length >= 1)
+      _createPopupMenuItem(
+        title: 'Eliminar seleccionados',
+        iconData: Icons.delete_sweep,
+        onTap: () {
+          setState(() {
+            c.eliminarSeleccionados();
+            Navigator.pop(context);
+          });
+        }
+      ),
+      if (c.marcado.length >= 1 && !c.objeto.getTipo)
+      _createPopupMenuItem(
+        title: 'Crear objeto',
+        iconData: Icons.add_circle,
+        onTap: () {
+          _mostrarAlerta(context);
+        }
+      ),
+      if (c.objeto.getTipo)
+      _createPopupMenuItem(
+        title: 'Disolver objeto',
+        iconData: Icons.add_circle,
+        onTap: () {
+          c.disolverObjeto();
+          Navigator.pop(context);
+        }
+      ),
+      if (c.objeto.getTipo)
+      _createPopupMenuItem(
+        title: 'Fusionar objeto',
+        iconData: Icons.add_box,
+        onTap: () {
+          c.fusionarObjeto();
+          Navigator.pop(context);
+        }
+      ),
+      _createPopupMenuItem(
+        title: 'Abrir',
+        iconData: Icons.open_in_browser,
+        onTap: () {
+          setState(() {
+            abrirArchivo();
+            Navigator.pop(context);
+          });
+        }
+      ),
+      _createPopupMenuItem(
+        title: 'Guardar',
+        iconData: Icons.save,
+        onTap: () {
+          setState(() {
+            Navigator.pop(context);
+            _modalGuardar();
+          });
+        }
+      ),
+      if (c.marcado.length > 0)
+      _createPopupMenuItem(
+        title: 'Color',
+        iconData: Icons.color_lens,
+        onTap: () {
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                titlePadding: const EdgeInsets.all(0.0),
+                contentPadding: const EdgeInsets.all(0.0),
+                content: SingleChildScrollView(
+                  child: MaterialPicker(
+                    pickerColor: currentColor,
+                    onColorChanged: changeColor,
+                    enableLabel: true,
                   ),
-                );
-              },
-            );
-          },
-        ),
-      ):null
+                ),
+              );
+            },
+          );
+        }
+      ),
     ];
   }
   
@@ -394,5 +370,22 @@ class _AreaPageState extends State<AreaPage> {
     setState(() => currentColor = color);
     c.cambiarColor(this.currentColor.value);
     Navigator.pop(context);
+  }
+
+  PopupMenuItem _createPopupMenuItem({String title, IconData iconData, OnTap onTap}) {
+    return PopupMenuItem(
+      child: ListTile(
+        title: Text(
+          title, 
+          style: TextStyle(
+            color: Colors.white, 
+            fontSize: 15.0,
+            fontWeight: FontWeight.bold
+          )
+        ),
+        leading: Icon(iconData, color: Colors.yellowAccent,),
+        onTap: onTap,
+      ),
+    );
   }
 }
