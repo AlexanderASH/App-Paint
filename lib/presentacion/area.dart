@@ -241,45 +241,53 @@ class _AreaPageState extends State<AreaPage> {
     );
   }
 
-  void _mostrarAlerta(BuildContext context){
+  void _mostrarAlerta(BuildContext context) {
     showDialog(
       context: context,
       barrierDismissible: true,
       builder: (context) {
         return AlertDialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
-          title: Text("Nuevo Objeto"),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              Padding(
-                padding:EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
-                child: TextField(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20.0)
+          ),
+          title: Text("Crear Objeto"),
+          content: Form(
+            key: this._formKey,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                TextFormField(
+                  validator: Validator.validateInput,
                   controller: this.pictureNameController,
                   decoration:InputDecoration(
-                    labelText: 'Nombre del Objeto',
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(20.0)),
+                    labelText: 'Nombre',
+                    hintText: 'Nombre',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(20.0)
+                    ),
                   ),
                 ),
-              ),
-            ],
+                Container(
+                  width: double.maxFinite,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20.0)
+                      ),
+                      primary: Colors.pink
+                    ),
+                    child: Text('Guardar'),
+                    onPressed: () {
+                      if (this._formKey.currentState.validate()) {
+                        this.controller.crearObjeto(this.pictureNameController.text);
+                        Navigator.pop(context);
+                      }
+                    },
+                  ),
+                ),
+              ],
+            ),
           ),
-          actions: <Widget>[
-            TextButton(
-              onPressed: (){
-                this.pictureNameController.text = "";
-                Navigator.pop(context);
-              },
-              child: Text('Cancelar'),
-            ),
-            TextButton(
-              onPressed: () {
-                this.controller.crearObjeto(this.pictureNameController.text);
-                Navigator.pop(context);
-              },
-              child: Text('Guardar'),
-            ),
-          ],
         );
       }
     );
