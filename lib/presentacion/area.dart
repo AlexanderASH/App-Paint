@@ -1,5 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:plottertopicos/utils/validator.dart';
 import 'package:positioned_tap_detector/positioned_tap_detector.dart';
 import 'package:plottertopicos/modelos/punto.dart';
 import 'package:plottertopicos/modelos/poligono.dart';
@@ -50,6 +51,8 @@ class _AreaPageState extends State<AreaPage> {
   TapPosition position;
   TextEditingController fileNameController;
   TextEditingController pictureNameController;
+
+  final _formKey = GlobalKey<FormState>();
   
   String _fileName;
   String _path;
@@ -69,6 +72,13 @@ class _AreaPageState extends State<AreaPage> {
     this.position = TapPosition(Offset.zero, Offset.zero);
     this.fileNameController = TextEditingController();
     this.pictureNameController = TextEditingController();
+  }
+
+  @override
+  void dispose() { 
+    this.fileNameController.dispose();
+    this.pictureNameController.dispose();
+    super.dispose();
   }
 
   @override
@@ -105,7 +115,7 @@ class _AreaPageState extends State<AreaPage> {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20.0)
           ),
-          itemBuilder: (context) => this.listOption(),
+          itemBuilder: (context) => this.getOptions(),
         ),
       ),
     );
@@ -170,45 +180,64 @@ class _AreaPageState extends State<AreaPage> {
     });
   }
 
-  void _modalGuardar() {
-    showModalBottomSheet(
+  void _guardarDibujo() {
+    showModalBottomSheet<void>(
       context: context,
+      isDismissible: true,
+      isScrollControlled: true,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(20.0),
+          topRight: Radius.circular(20.0)
+        )
+      ),
       builder: (context) {
         return Container(
-          color: Colors.green,
-          height: 400,
-          child: Container(
-            child: _cuerpoModal(),
-            decoration: BoxDecoration(
-              color: Theme.of(context).canvasColor,
-              borderRadius: BorderRadius.only(
-                topLeft: const Radius.circular(30),
-                topRight: const Radius.circular(30),
-              )
+          padding: EdgeInsets.all(20.0),
+          height: MediaQuery.of(context).size.height * 0.40,
+          child: Form(
+            key: this._formKey,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: <Widget>[
+                ListTile(
+                  leading: Icon(Icons.save),
+                  title: Text('Guardar Como'),
+                ),
+                TextFormField(
+                  validator: Validator.validateInput,
+                  controller: this.fileNameController,
+                  decoration: InputDecoration(
+                    labelText: 'Nombre',
+                    hintText: 'Nombre',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(20.0)
+                    ),
+                  ),
+                ),
+                Container(
+                  width: double.maxFinite,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20.0)
+                      ),
+                      primary: Colors.pink
+                    ),
+                    child: Text('Guardar'),
+                    onPressed: () {
+                      if (this._formKey.currentState.validate()) {
+                        guardarArchivo(this.fileNameController.text);
+                        Navigator.pop(context);
+                      }
+                    },
+                  ),
+                )
+              ],
             ),
           ),
         );
       }
-    );
-  }
-  Column _cuerpoModal() {
-    return Column(
-      children: <Widget>[
-        ListTile(
-          leading: Icon(Icons.save),
-          title: Text('Guardar Como'),
-          onTap: () {
-          },
-        ),
-        TextField( controller: this.fileNameController,),
-        ElevatedButton(
-          child: Text('Guardar Archivo'),
-          onPressed: () {
-            guardarArchivo(this.fileNameController.text);
-            Navigator.pop(context);
-          },
-        )
-      ],
     );
   }
 
@@ -256,7 +285,7 @@ class _AreaPageState extends State<AreaPage> {
     );
   }
 
-  List<PopupMenuEntry<dynamic>> listOption() {
+  List<PopupMenuEntry<dynamic>> getOptions() {
     return <PopupMenuEntry>[
       _createPopupMenuItem(
         title: this.select ? 'Activar Seleccion' : 'Desactivar Seleccion',
@@ -354,7 +383,7 @@ class _AreaPageState extends State<AreaPage> {
         onTap: () {
           setState(() {
             Navigator.pop(context);
-            this._modalGuardar();
+            this._guardarDibujo();
           });
         }
       ),
