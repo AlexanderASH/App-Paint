@@ -42,14 +42,14 @@ class AreaPage extends StatefulWidget {
 
 typedef void OnTap();
 class _AreaPageState extends State<AreaPage> {
-  Controlador c = new Controlador();
-  bool select = true;
-  bool selectPunto = true;
-  Color currentColor = Colors.amber;
-  ControladorJsonSerializer clse = new ControladorJsonSerializer();
-  TapPosition _position = TapPosition(Offset.zero, Offset.zero);
-  TextEditingController nombreControler = new TextEditingController();
-  TextEditingController nombreObjeto = new TextEditingController();
+  Controlador controller;
+  bool select;
+  bool selectPoint;
+  Color currentColor;
+  ControladorJsonSerializer jsonSerializer;
+  TapPosition position;
+  TextEditingController fileNameController;
+  TextEditingController pictureNameController;
   
   String _fileName;
   String _path;
@@ -59,21 +59,39 @@ class _AreaPageState extends State<AreaPage> {
   FileType _pickingType = FileType.custom;
 
   @override
+  void initState() { 
+    super.initState();
+    this.controller = Controlador();
+    this.select = true;
+    this.selectPoint = true;
+    this.currentColor = Colors.amber;
+    this.jsonSerializer = ControladorJsonSerializer();
+    this.position = TapPosition(Offset.zero, Offset.zero);
+    this.fileNameController = TextEditingController();
+    this.pictureNameController = TextEditingController();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    c.width = size.width;
-    c.height = size.height;
+    this.controller.width = size.width;
+    this.controller.height = size.height;
+
     return Scaffold(
       body: SingleChildScrollView(
         child:Column(
           children: [
             PositionedTapDetector(
-              onTap: _onTap,
-              onDoubleTap: _onDoubleTap,
-              onLongPress: _onLongPress,
+              onTap: this._onTap,
+              onDoubleTap: this._onDoubleTap,
+              onLongPress: this._onLongPress,
               child: CustomPaint(
                 size: Size(size.width, size.height),
-                painter: Dibujo(c.escenario, c.asignarPrimerPunto,c.marcado),
+                painter: Dibujo(
+                  this.controller.escenario, 
+                  this.controller.asignarPrimerPunto,
+                  this.controller.marcado
+                ),
               ),
             ),
           ],
@@ -87,7 +105,7 @@ class _AreaPageState extends State<AreaPage> {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20.0)
           ),
-          itemBuilder: (context) => listOption(),
+          itemBuilder: (context) => this.listOption(),
         ),
       ),
     );
@@ -95,39 +113,39 @@ class _AreaPageState extends State<AreaPage> {
 
   Future _onTap(TapPosition position) async {
     if (this.select) {
-        c.insertarPunto(position.global.dx, position.global.dy);
+        this.controller.insertarPunto(position.global.dx, position.global.dy);
     } else {
-      if (this.selectPunto) {
-        c.selectPoligono(position.global.dx, position.global.dy);
+      if (this.selectPoint) {
+        this.controller.selectPoligono(position.global.dx, position.global.dy);
       } else {
         setState(() {
-          c.eliminarPuntoSelect(position.global.dx, position.global.dy);
+          this.controller.eliminarPuntoSelect(position.global.dx, position.global.dy);
         });
       }
     }
-    _updateState('gesture', position);
+    this._updateState('gesture', position);
   }
 
   void _onDoubleTap(TapPosition position) {
-    c.insertarPunto(position.global.dx, position.global.dy);
-    c.cerrarPoligono();
-    c.nuevoPoligono();
-    _updateState('gesture', position);
+    this.controller.insertarPunto(position.global.dx, position.global.dy);
+    this.controller.cerrarPoligono();
+    this.controller.nuevoPoligono();
+    this._updateState('gesture', position);
   }
 
   void _onLongPress(TapPosition position) {
-    c.nuevoPoligono();
-    _updateState('long press', position);
+    this.controller.nuevoPoligono();
+    this._updateState('long press', position);
   }
 
   void _updateState(String gesture, TapPosition position) {
     setState(() {
-      _position = position;
+      this.position = position;
     });
   }
 
   void guardarArchivo(String nombre) async {
-    final Map map = clse.toMap(c);
+    final Map map = this.jsonSerializer.toMap(this.controller);
     final file = File('/storage/emulated/0/Download/$nombre.odt');
     await file.writeAsString(json.encode(map));
   }
@@ -140,10 +158,10 @@ class _AreaPageState extends State<AreaPage> {
     final file = File(_path);
     String text = await file.readAsString();
     Map<String, dynamic> map = json.decode(text);
-    Controlador decoded = clse.fromMap(map);
+    Controlador decoded = this.jsonSerializer.fromMap(map);
     setState(() {
-      c = decoded;
-      c.restablecerArea();
+      this.controller = decoded;
+      this.controller.restablecerArea();
     });
 
     if (!mounted) return;
@@ -182,11 +200,11 @@ class _AreaPageState extends State<AreaPage> {
           onTap: () {
           },
         ),
-        TextField( controller: nombreControler,),
+        TextField( controller: this.fileNameController,),
         ElevatedButton(
           child: Text('Guardar Archivo'),
-          onPressed: (){
-            guardarArchivo(nombreControler.text);
+          onPressed: () {
+            guardarArchivo(this.fileNameController.text);
             Navigator.pop(context);
           },
         )
@@ -208,7 +226,7 @@ class _AreaPageState extends State<AreaPage> {
               Padding(
                 padding:EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
                 child: TextField(
-                  controller: nombreObjeto,
+                  controller: this.pictureNameController,
                   decoration:InputDecoration(
                     labelText: 'Nombre del Objeto',
                     border: OutlineInputBorder(borderRadius: BorderRadius.circular(20.0)),
@@ -220,14 +238,14 @@ class _AreaPageState extends State<AreaPage> {
           actions: <Widget>[
             TextButton(
               onPressed: (){
-                this.nombreObjeto.text = "";
+                this.pictureNameController.text = "";
                 Navigator.pop(context);
               },
               child: Text('Cancelar'),
             ),
             TextButton(
               onPressed: () {
-                c.crearObjeto(nombreObjeto.text);
+                this.controller.crearObjeto(this.pictureNameController.text);
                 Navigator.pop(context);
               },
               child: Text('Guardar'),
@@ -246,7 +264,7 @@ class _AreaPageState extends State<AreaPage> {
         onTap: () {
           setState(() {
             this.select = !this.select;
-            this.selectPunto = true;
+            this.selectPoint = true;
             Navigator.pop(context);
           });
         }
@@ -256,76 +274,76 @@ class _AreaPageState extends State<AreaPage> {
         iconData: Icons.delete_forever,
         onTap: () {
           setState(() {
-            c.limpiarArea();
+            this.controller.limpiarArea();
             Navigator.pop(context);
           });
         }
       ),
-      if (c.marcado.length == 1 && !c.objeto.getTipo)
+      if (this.controller.marcado.length == 1 && !this.controller.objeto.getTipo)
       _createPopupMenuItem(
         title: 'Eliminar ultimo punto',
         iconData: Icons.delete_outline,
         onTap: () {
           setState(() {
-            c.eliminarLastPunto();
+            this.controller.eliminarLastPunto();
             Navigator.pop(context);
           });
         }
       ),
-      if (c.marcado.length == 1 && !c.objeto.getTipo)
+      if (this.controller.marcado.length == 1 && !this.controller.objeto.getTipo)
       _createPopupMenuItem(
-        title: (this.selectPunto) ? 'Activar eliminacion de punto' : 'Desactivar eliminacion de punto',
+        title: (this.selectPoint) ? 'Activar eliminacion de punto' : 'Desactivar eliminacion de punto',
         iconData: Icons.delete_outline,
         onTap: () {
           setState(() {
-            this.selectPunto =! this.selectPunto;
+            this.selectPoint =! this.selectPoint;
             Navigator.pop(context);
           });
         }
       ),
-      if (c.marcado.length >= 1)
+      if (this.controller.marcado.length >= 1)
       _createPopupMenuItem(
         title: 'Eliminar seleccionados',
         iconData: Icons.delete_sweep,
         onTap: () {
           setState(() {
-            c.eliminarSeleccionados();
+            this.controller.eliminarSeleccionados();
             Navigator.pop(context);
           });
         }
       ),
-      if (c.marcado.length >= 1 && !c.objeto.getTipo)
+      if (this.controller.marcado.length >= 1 && !this.controller.objeto.getTipo)
       _createPopupMenuItem(
         title: 'Crear objeto',
         iconData: Icons.add_circle,
         onTap: () {
-          _mostrarAlerta(context);
+          this._mostrarAlerta(context);
         }
       ),
-      if (c.objeto.getTipo)
+      if (this.controller.objeto.getTipo)
       _createPopupMenuItem(
         title: 'Disolver objeto',
         iconData: Icons.add_circle,
         onTap: () {
-          c.disolverObjeto();
+          this.controller.disolverObjeto();
           Navigator.pop(context);
         }
       ),
-      if (c.objeto.getTipo)
+      if (this.controller.objeto.getTipo)
       _createPopupMenuItem(
         title: 'Fusionar objeto',
         iconData: Icons.add_box,
         onTap: () {
-          c.fusionarObjeto();
+          this.controller.fusionarObjeto();
           Navigator.pop(context);
         }
       ),
       _createPopupMenuItem(
         title: 'Abrir',
         iconData: Icons.open_in_browser,
-        onTap: () {
+        onTap: () async {
           setState(() {
-            abrirArchivo();
+            this.abrirArchivo();
             Navigator.pop(context);
           });
         }
@@ -336,11 +354,11 @@ class _AreaPageState extends State<AreaPage> {
         onTap: () {
           setState(() {
             Navigator.pop(context);
-            _modalGuardar();
+            this._modalGuardar();
           });
         }
       ),
-      if (c.marcado.length > 0)
+      if (this.controller.marcado.length > 0)
       _createPopupMenuItem(
         title: 'Color',
         iconData: Icons.color_lens,
@@ -368,7 +386,7 @@ class _AreaPageState extends State<AreaPage> {
   
   void changeColor(Color color){
     setState(() => currentColor = color);
-    c.cambiarColor(this.currentColor.value);
+    this.controller.cambiarColor(this.currentColor.value);
     Navigator.pop(context);
   }
 
