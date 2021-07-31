@@ -8,6 +8,10 @@ class Escenario {
     this._objetos = [];
   }
 
+  set objetos(List<Objeto> objetos) {
+    this._objetos = objetos;
+  }
+
   void insertarObjeto(Objeto objeto) {
     this._objetos.add(objeto);
   }
@@ -30,5 +34,15 @@ class Escenario {
   
   Objeto getObjetoBase() {
     return this._objetos[0];
+  }
+
+  Map<String, dynamic> toJson() => {
+    'objetos': List<dynamic>.from(this._objetos.map((objeto) => objeto.toJson()))
+  };
+
+  factory Escenario.fromJson(Map<String, dynamic> data) {
+    Escenario escenario = Escenario();
+    escenario.objetos = List<Objeto>.from(data['objetos'].map((objeto) => Objeto.fromJson(objeto)));
+    return escenario;
   }
 }

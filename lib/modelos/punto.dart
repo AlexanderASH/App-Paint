@@ -6,5 +6,12 @@ class Punto {
 
   double get getX => this._x;
   double get getY => this._y;
+
+  Map<String, dynamic> toJson() => {
+    'x': this._x,
+    'y': this._y
+  };
+
+  factory Punto.fromJson(Map<String, dynamic> data) => Punto(data['x'], data['y']);
 }
  

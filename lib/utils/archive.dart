@@ -12,12 +12,12 @@ class Archive {
     await file.writeAsString(json.encode(data));
   }
 
-  static Future<String> open() async {
+  static Future<Map<String, dynamic>> open() async {
     final path = await FilePicker.platform.pickFiles(
       type: FileType.custom, 
       allowedExtensions: ['odt'],
     );
     final file = File(path.files.first.path);
-    return await file.readAsString();
+    return json.decode(await file.readAsString());
   }
 }

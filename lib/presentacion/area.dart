@@ -10,7 +10,6 @@ import 'package:plottertopicos/modelos/objeto.dart';
 import 'package:plottertopicos/negocio/controlador.dart';
 import 'package:plottertopicos/negocio/dibujador.dart';
 import 'package:jaguar_serializer/jaguar_serializer.dart';
-import 'dart:convert';
 
 import 'package:flutter_colorpicker/material_picker.dart';
 part 'area.jser.dart';
@@ -147,15 +146,14 @@ class _AreaPageState extends State<AreaPage> {
   }
 
   void guardarArchivo(String nombre) async {
-    final Map json = this.jsonSerializer.toMap(this.controller);
-    await Archive.save(json, nombre);
+    // final Map json = this.jsonSerializer.toMap(this.controller);
+    await Archive.save(this.controller.escenario.toJson(), nombre);
   }
 
   void abrirArchivo() async {
-    Map<String, dynamic> data = json.decode(await Archive.open());
-    Controlador decoded = this.jsonSerializer.fromMap(data);
+    Map<String, dynamic> data = await Archive.open();
+    this.controller.escenario = Escenario.fromJson(data);
     setState(() {
-      this.controller = decoded;
       this.controller.restablecerArea();
     });
   }

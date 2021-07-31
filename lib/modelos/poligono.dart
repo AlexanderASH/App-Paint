@@ -12,6 +12,10 @@ class Poligono {
     _color = 0xff000000;
   }
 
+  set puntos(List<Punto> puntos) {
+    this._puntos = puntos;
+  }
+
   void setTipo(bool value) => this._tipo = value;
 
   void setColor(int color) {
@@ -40,6 +44,20 @@ class Poligono {
 
   void eliminarPunto(int index) {
     this._puntos.removeAt(index);
+  }
+
+  Map<String, dynamic> toJson() => {
+    'tipo': this._tipo,
+    'color': this._color,
+    'puntos': List<dynamic>.from(this._puntos.map((punto) => punto.toJson()))
+  };
+
+  factory Poligono.fromJson(Map<String, dynamic> data) {
+    Poligono poligono = Poligono();
+    poligono.setTipo(data['tipo']);
+    poligono.setColor(data['color']);
+    poligono.puntos = List<Punto>.from(data['puntos'].map((punto) => Punto.fromJson(punto)));
+    return poligono;
   }
 
 }
