@@ -1,5 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:plottertopicos/utils/archive.dart';
 import 'package:plottertopicos/utils/validator.dart';
 import 'package:positioned_tap_detector/positioned_tap_detector.dart';
 import 'package:plottertopicos/modelos/punto.dart';
@@ -9,8 +10,6 @@ import 'package:plottertopicos/modelos/objeto.dart';
 import 'package:plottertopicos/negocio/controlador.dart';
 import 'package:plottertopicos/negocio/dibujador.dart';
 import 'package:jaguar_serializer/jaguar_serializer.dart';
-import 'package:file_picker/file_picker.dart';
-import 'dart:io';
 import 'dart:convert';
 
 import 'package:flutter_colorpicker/material_picker.dart';
@@ -53,13 +52,6 @@ class _AreaPageState extends State<AreaPage> {
   TextEditingController pictureNameController;
 
   final _formKey = GlobalKey<FormState>();
-  
-  String _fileName;
-  String _path;
-
-  List<String> _extension = ['odt'];
-
-  FileType _pickingType = FileType.custom;
 
   @override
   void initState() { 
@@ -155,28 +147,16 @@ class _AreaPageState extends State<AreaPage> {
   }
 
   void guardarArchivo(String nombre) async {
-    final Map map = this.jsonSerializer.toMap(this.controller);
-    final file = File('/storage/emulated/0/Download/$nombre.odt');
-    await file.writeAsString(json.encode(map));
+    final Map json = this.jsonSerializer.toMap(this.controller);
+    await Archive.save(json, nombre);
   }
 
   void abrirArchivo() async {
-    _path = (await FilePicker.platform.pickFiles(
-      type: _pickingType, 
-      allowedExtensions: _extension)
-    ).toString();
-    final file = File(_path);
-    String text = await file.readAsString();
-    Map<String, dynamic> map = json.decode(text);
-    Controlador decoded = this.jsonSerializer.fromMap(map);
+    Map<String, dynamic> data = json.decode(await Archive.open());
+    Controlador decoded = this.jsonSerializer.fromMap(data);
     setState(() {
       this.controller = decoded;
       this.controller.restablecerArea();
-    });
-
-    if (!mounted) return;
-    setState(() {
-      _fileName = _path != null ? _path.split('/').last : '...';
     });
   }
 
