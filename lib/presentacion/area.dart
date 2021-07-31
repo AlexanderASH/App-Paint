@@ -121,11 +121,19 @@ class _AreaPageState extends State<AreaPage> {
   }
 
   void abrirArchivo() async {
-    Map<String, dynamic> data = await Archive.open();
-    this.controller.escenario = Escenario.fromJson(data);
-    setState(() {
-      this.controller.restablecerArea();
-    });
+    try {
+      Map<String, dynamic> data = await Archive.open();
+      this.controller.escenario = Escenario.fromJson(data);
+      setState(() {
+        this.controller.restablecerArea();
+      });
+    } catch (e) {
+      ScaffoldMessenger.of(context)
+        .showSnackBar(SnackBar(
+          content: Text(e.message)
+        )
+      );
+    }
   }
 
   void _guardarDibujo() {

@@ -13,11 +13,20 @@ class Archive {
   }
 
   static Future<Map<String, dynamic>> open() async {
-    final path = await FilePicker.platform.pickFiles(
-      type: FileType.custom, 
-      allowedExtensions: ['odt'],
-    );
-    final file = File(path.files.first.path);
-    return json.decode(await file.readAsString());
+    try {
+      final path = await FilePicker.platform.pickFiles(
+        type: FileType.custom, 
+        allowedExtensions: ['odt'],
+      );
+
+      if (path == null) {
+        throw Exception('No se eligio un archivo');
+      }
+
+      final file = File(path.files.first.path);
+      return json.decode(await file.readAsString());
+    } catch (e) {
+      throw Exception(e.message);
+    }
   }
 }
