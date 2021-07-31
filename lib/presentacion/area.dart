@@ -3,37 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:plottertopicos/utils/archive.dart';
 import 'package:plottertopicos/utils/validator.dart';
 import 'package:positioned_tap_detector/positioned_tap_detector.dart';
-import 'package:plottertopicos/modelos/punto.dart';
-import 'package:plottertopicos/modelos/poligono.dart';
 import 'package:plottertopicos/modelos/Escenario.dart';
-import 'package:plottertopicos/modelos/objeto.dart';
 import 'package:plottertopicos/negocio/controlador.dart';
 import 'package:plottertopicos/negocio/dibujador.dart';
-import 'package:jaguar_serializer/jaguar_serializer.dart';
-
 import 'package:flutter_colorpicker/material_picker.dart';
-part 'area.jser.dart';
-
-@GenSerializer()
-class PuntoJsonSerializer extends Serializer<Punto> with _$PuntoJsonSerializer {
-}
-
-@GenSerializer()
-class PoligonoJsonSerializer extends Serializer<Poligono>
-    with _$PoligonoJsonSerializer {}
-
-@GenSerializer()
-class ObjetoJsonSerializer extends Serializer<Objeto>
-    with _$ObjetoJsonSerializer {}
-
-@GenSerializer()
-class EscenarioJsonSerializer extends Serializer<Escenario>
-    with _$EscenarioJsonSerializer {}
-
-@GenSerializer()
-class ControladorJsonSerializer extends Serializer<Controlador>
-    with _$ControladorJsonSerializer {}
-
 class AreaPage extends StatefulWidget {
 
   _AreaPageState createState() => _AreaPageState();
@@ -45,7 +18,6 @@ class _AreaPageState extends State<AreaPage> {
   bool select;
   bool selectPoint;
   Color currentColor;
-  ControladorJsonSerializer jsonSerializer;
   TapPosition position;
   TextEditingController fileNameController;
   TextEditingController pictureNameController;
@@ -59,7 +31,6 @@ class _AreaPageState extends State<AreaPage> {
     this.select = true;
     this.selectPoint = true;
     this.currentColor = Colors.amber;
-    this.jsonSerializer = ControladorJsonSerializer();
     this.position = TapPosition(Offset.zero, Offset.zero);
     this.fileNameController = TextEditingController();
     this.pictureNameController = TextEditingController();
@@ -146,7 +117,6 @@ class _AreaPageState extends State<AreaPage> {
   }
 
   void guardarArchivo(String nombre) async {
-    // final Map json = this.jsonSerializer.toMap(this.controller);
     await Archive.save(this.controller.escenario.toJson(), nombre);
   }
 

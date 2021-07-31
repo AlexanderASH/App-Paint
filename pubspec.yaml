@@ -12,7 +12,6 @@ dependencies:
   scoped_model: ^1.1.0
   cupertino_icons: ^0.1.2
   positioned_tap_detector: ^1.0.3
-  jaguar_serializer: ^2.2.12
   path_provider: ^2.0.1
   file_picker: ^3.0.0
   flutter_colorpicker: ^0.2.6
@@ -20,7 +19,6 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  build_runner: 
   flutter_launcher_icons: ^0.9.1
 
 flutter_icons:
